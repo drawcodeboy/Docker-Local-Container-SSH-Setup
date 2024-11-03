@@ -1,0 +1,45 @@
+# (1) Build Image
+
+docker build -t py_img .
+
+===========================================================================================
+
+# (2) Run Container
+
+# -itd -> for interaction with container
+# -p <Host port>:<Container port> -> port mapping
+# --privileged -> privileged mode for systemctl (for SSH service)
+# --name -> container name
+# -v <Host path>:<Container path> -> volume mount
+# <image name>
+# /sbin/init -> boot with systemd for systemctl
+
+docker run -itd -p 9005:22 --privileged --name py_con -v .:/home/project py_img /sbin/init
+
+===========================================================================================
+
+# (3) Modify SSH Setting
+# You should enter your container
+
+vi /etc/ssh/sshd_config
+PermitRootLogin yes # Add this statement
+:wq # Write and Quit from sshd_config
+
+===========================================================================================
+
+# (4) Change password
+sudo passwd root
+
+===========================================================================================
+
+# (5) Refresh
+
+sudo systemctl restart ssh
+or
+sudo systemctl restart sshd
+
+===========================================================================================
+
+# (6) End Setup
+
+NOW YOU CAN ENTER LOCAL CONTAINER WITH SSH!
